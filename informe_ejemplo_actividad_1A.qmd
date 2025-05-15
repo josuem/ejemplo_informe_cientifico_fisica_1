@@ -31,7 +31,7 @@ La reducción de la incertidumbre de un proceso de medición permite aumentar la
 4. Comparar la incertidumbre asociada a la medición de un celular y un medidor de ángulo analógico.
 
 # Montaje y metodologías
-Para definir un plano inclinado se emplea un soporte universal junto a un riel Pasco, como se muestra en la Figura @fig-montaje. El riel se fija al soporte mediante una nuez, estableciendo inicialmente un ángulo de 10° medido con un transportador analógico (rango 0–180°, resolución de 1°). Sobre el riel se posiciona un smartphone con la aplicación *Phyphox*, que utiliza su acelerómetro para registrar los ángulos de inclinación ($\alpha$) y rotación ($\beta$) del plano.
+Para definir un plano inclinado se emplea un soporte universal junto a un riel Pasco, como se muestra en la @fig-montaje. El riel se fija al soporte mediante una nuez, estableciendo inicialmente un ángulo de 10° medido con un transportador analógico (rango 0–180°, resolución de 1°). Sobre el riel se posiciona un smartphone con la aplicación *Phyphox*, que utiliza su acelerómetro para registrar los ángulos de inclinación ($\alpha$) y rotación ($\beta$) del plano.
 
 ![Montaje experimental. Fuente: Guía de Laboratorio de Física, USACH](./img/montaje_experimental.png){#fig-montaje}
 
