@@ -96,7 +96,7 @@ def plot(df, y_header = "Tilt up/down (deg)", label="Rotación plano inclinado")
 
 ```
 
-Utilizando las Ecuaciones @eq-promedio y @eq-incertidumbre, se obtiene el valor promedio y la incertidumbre asociada para cada componente:
+Utilizando la @eq-promedio y @eq-incertidumbre, se obtiene el valor promedio y la incertidumbre asociada para cada componente:
 $$
 \begin{aligned}
     \alpha_1 &= \bar{\alpha_1} \pm \Delta \alpha_1 = (81.9876 \pm 0.0077)^\circ \\\\
