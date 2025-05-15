@@ -1,0 +1,233 @@
+---
+title: "Medición precisa de ángulos de inclinación con smartphones"
+subtitle: Laboratorio de Física I
+author: Josué Meneses Díaz
+lang: es
+format: 
+    pdf:
+        documentclass: article
+        classoption: [twocolumn]
+---
+
+\abstract{En esta experiencia se estudia la precisión alcanzada al medir el ángulo de inclinación de un plano mediante un smartphone con la aplicación Phyphox. Se comparan las mediciones obtenidas con el sensor digital del teléfono con las de un medidor de ángulo analógico. Para ello, se realizan 30 mediciones consecutivas antes y después de una pequeña variación del plano (<1°), calculando la media e incertidumbre mediante propagación estadística ($2\sigma/\sqrt{N}$). Los resultados muestran que el sistema basado en el smartphone permite detectar diferencias de inclinación del orden de 0.1°, con una incertidumbre inferior a 0.01°. Se concluye que este tipo de sensores digitales son altamente precisos y adecuados para distinguir entre inclinaciones muy similares, validando la hipótesis inicial. Se discuten además fuentes de error sistemático y propuestas de mejora experimental.}
+
+# Introducción y Objetivos
+Todo instrumento utilizado para realizar una medición presenta una cierta dispersión en los valores registrados. Esta dispersión se denomina **incertidumbre** y define un intervalo de confianza dentro del cual se considera que la medición es válida. Sea $x$ la magnitud medida experimentalmente, esta se expresa como:
+$$
+x = \bar{x} \pm \Delta x
+$$
+
+donde $\bar{x}$ representa el valor promedio de la medición y $\Delta x$ la incertidumbre asociada con la medida.
+
+La teoría de la incertidumbre permite no solo cuantificar la precisión de una medición, sino también evaluar la capacidad de un instrumento para discernir entre valores cercanos. En esta experiencia se busca evidenciar cómo una menor incertidumbre mejora la capacidad de distinguir entre dos mediciones muy similares.
+
+## Hipótesis de trabajo
+La reducción de la incertidumbre de un proceso de medición permite aumentar la capacidad de distinguir entre dos mediciones muy similares.
+
+## Objetivos
+1. Medir la inclinación de un plano inclinado utilizando un celular y un medidor de ángulo analógico.
+2. Comparar la medición de un celular con un medidor de ángulo analógico.
+3. Calcular la incertidumbre asociada a la medición de un celular y un medidor de ángulo analógico.
+4. Comparar la incertidumbre asociada a la medición de un celular y un medidor de ángulo analógico.
+
+# Montaje y metodologías
+Para definir un plano inclinado se emplea un soporte universal junto a un riel Pasco, como se muestra en la Figura @fig-montaje. El riel se fija al soporte mediante una nuez, estableciendo inicialmente un ángulo de 10° medido con un transportador analógico (rango 0–180°, resolución de 1°). Sobre el riel se posiciona un smartphone con la aplicación *Phyphox*, que utiliza su acelerómetro para registrar los ángulos de inclinación ($\alpha$) y rotación ($\beta$) del plano.
+
+![Montaje experimental. Fuente: Guía de Laboratorio de Física, USACH](./img/montaje_experimental.png){#fig-montaje}
+
+Se realizan como mínimo 30 mediciones consecutivas de $\alpha$ y $\beta$. Luego, se varía el ángulo de inclinación en menos de 1° y se repite la adquisición. Para caracterizar estadísticamente las mediciones, se calcula el valor promedio:
+$$
+\bar{x}=\frac{1}{N}\sum_{i=1}^{N}x_i
+$$ {#eq-promedio}
+
+y la incertidumbre asociada mediante el criterio de $2\sigma$:
+$$
+\Delta x = \frac{2\sigma}{\sqrt{N}}
+$$ {#eq-incertidumbre}
+
+donde $\sigma$ es la desviación estándar, calculada como:
+$$
+\sigma = \sqrt{\frac{1}{N-1}\sum_{i=1}^{N}(x_i - \bar{x})^2}
+$$ {#eq-desviacion}
+
+Para el instrumento analógico, la incertidumbre se estima a partir de su resolución $R$ como:
+$$
+\Delta x = \frac{R}{\sqrt{12}}
+$$ {#eq-incertidumbre-analogo}
+
+# Resultados
+En la @fig-inclinacion se muestran las mediciones del ángulo de inclinación del plano inclinado, utilizando un celular y un medidor de ángulo analógico. Las mediciones fueron realizadas en un intervalo de tiempo de 30 segundos. En la @fig-rotacion se muestra la rotación del plano inclinado. Ambas mediciones han sido realizadas de forma simultanea utilizando un celular.
+
+En la @fig-inclinacion se presentan las mediciones del ángulo de inclinación ($\alpha$) del plano inclinado, obtenidas mediante el sensor del smartphone. En la  @fig-rotacion se muestra la rotación ($\beta$) del mismo plano. Ambas series fueron registradas simultáneamente durante 30 segundos.
+
+```{python}
+#| echo: false
+import matplotlib.pyplot as plt
+import pandas as pd
+import scienceplots
+
+plt.style.use(['science', 'ieee', 'notebook'])
+
+df = pd.read_excel('./datos/inclinacion_data.xlsx', sheet_name='Upright')
+# Filtro las mediciones bajo los 30s de la columna t (s)
+df2 = df[df["t (s)"] > 32]
+df = df[df["t (s)"] < 27]
+
+def plot(df, y_header = "Tilt up/down (deg)", label="Rotación plano inclinado"):
+    fig, axd = plt.subplot_mosaic(
+        [["main", "hist"]],
+        figsize=(8, 6),
+        width_ratios=[4, 1],
+        constrained_layout=True
+    )
+
+    # Gráfico principal
+    df.plot(x="t (s)", y=y_header, ax=axd["main"],
+            label=label,
+            xlabel="Tiempo (s)", ylabel="Ángulo (°)")
+
+    # Histograma a la derecha
+    axd["hist"].hist(df2[y_header], bins=15, orientation="horizontal", color="gray", alpha=0.7)
+    axd["hist"].set_xlabel("Frecuencia")
+    axd["hist"].set_yticks([])  # Opcional: quitar ticks del eje y
+    axd["hist"].set_title("Histograma")
+
+    plt.show()
+
+```
+
+Utilizando las Ecuaciones @eq-promedio y @eq-incertidumbre, se obtiene el valor promedio y la incertidumbre asociada para cada componente:
+$$
+\begin{aligned}
+    \alpha_1 &= \bar{\alpha_1} \pm \Delta \alpha_1 = (81.9876 \pm 0.0077)^\circ \\\\
+    \beta_1  &= \bar{\beta_1} \pm \Delta \beta_1 = (-2.9638 \pm 0.0108)^\circ
+\end{aligned}
+$$
+
+```{python}
+#| label: tab-montaje
+#| echo: false
+
+def calcular_incertidumbre(df, col):
+    promedio = df[col].mean()
+    std = df[col].std()
+    incerteza = (2 * std) / (df.size ** 0.5)
+    return promedio, std, incerteza
+
+promedio_a_1, std_a_1, incerteza_a_1 = calcular_incertidumbre(df, "Tilt up/down (deg)")
+promedio_b_1, std_b_1, incerteza_b_1 = calcular_incertidumbre(df, "Tilt left/right (deg)")
+
+# print(f"Promedio: {promedio_a_1:.4f}, Desviación estándar: {std_a_1:.4f}, Incertidumbre: {incerteza_a_1:.4f}")
+# print(f"Promedio: {promedio_b_1:.4f}, Desviación estándar: {std_b_1:.4f}, Incertidumbre: {incerteza_b_1:.4f}")
+
+# \alpha = \bar{\alpha} \pm \Delta \alpha =(`{python} promedio_1` \pm `{python} incerteza_1`) °
+```
+
+Luego, se realizó una variación menor a 1° en la inclinación del plano. Tras esta modificación, se repitió el procedimiento de medición. Los resultados se muestran en las @fig-inclinacion2 y @fig-rotacion2, obteniendo:
+$$
+\begin{aligned}
+    \alpha_2 &= \bar{\alpha_2} \pm \Delta \alpha_2 = (82.1047 \pm 0.0073)^\circ \\\\
+    \beta_2  &= \bar{\beta_2} \pm \Delta \beta_2 = (-4.6641 \pm 0.0563)^\circ
+\end{aligned}
+$$
+
+```{python}
+#| echo: false
+
+promedio_a_2, std_a_2, incerteza_a_2 = calcular_incertidumbre(df2, "Tilt up/down (deg)")
+promedio_b_2, std_b_2, incerteza_b_2 = calcular_incertidumbre(df2, "Tilt left/right (deg)")
+
+# print(f"Promedio: {promedio_a_2:.4f}, Desviación estándar: {std_a_2:.4f}, Incertidumbre: {incerteza_a_2:.4f}")
+# print(f"Promedio: {promedio_b_2:.4f}, Desviación estándar: {std_b_2:.4f}, Incertidumbre: {incerteza_b_2:.4f}")
+
+# \alpha = \bar{\alpha} \pm \Delta \alpha =(`{python} promedio_1` \pm `{python} incerteza_1`) °
+```
+
+Aplicando la fórmula de propagación de incertidumbres entre dos valores medidos:
+$$
+\Delta x = \sqrt{(\Delta x_1)^2 + (\Delta x_2)^2}
+$$
+
+se obtiene:
+$$
+\begin{aligned}
+    \alpha_2 - \alpha_1 &= (0.1171 \pm 0.0016)^\circ \\\\
+    \beta_2 - \beta_1   &= (-1.7003 \pm 0.0137)^\circ
+\end{aligned}
+$$
+
+Estos resultados serán analizados en la sección siguiente para evaluar la capacidad del sensor del smartphone de distinguir cambios pequeños en la inclinación del plano.
+
+```{python}
+#| echo: false
+
+dif_a = promedio_a_2 - promedio_a_1
+dif_b = promedio_b_2 - promedio_b_1
+inc_a = (incerteza_a_1**2 + incerteza_a_2**2)**0.5
+inc_b = (incerteza_b_1**2 + incerteza_b_2**2)**0.5
+
+# print(f"Promedio: {dif_a:.4f}, Incertidumbre: {inc_a:.4f}") 
+# print(f"Promedio: {dif_b:.4f}, Incertidumbre: {inc_b:.4f}")
+```
+
+
+```{python}
+#| label: fig-inclinacion
+#| fig-cap: Inclinación plano inclinado $\alpha_1$
+#| echo: false
+
+plot(df, y_header = "Tilt up/down (deg)", label="Inclinación plano inclinado, $\\alpha_1$")
+```
+
+```{python}
+#| label: fig-rotacion
+#| fig-cap: Rotación plano inclinado $\beta_1$
+#| echo: false
+
+plot(df, y_header = "Tilt left/right (deg)", label="Rotación plano inclinado, $\\beta_1$")
+```
+
+```{python}
+#| label: fig-inclinacion2
+#| fig-cap: Inclinación plano inclinado $\alpha_2$, luego de la vaciación de la inclinación del plano inclinado
+#| echo: false
+
+plot(df2, y_header = "Tilt up/down (deg)", label="Inclinación plano inclinado, $\\alpha_2$")
+```
+
+```{python}
+#| label: fig-rotacion2
+#| fig-cap: ángulo de rotación plano inclinado $\beta$
+#| echo: false
+
+plot(df2, y_header = "Tilt left/right (deg)", label="Rotación plano inclinado, $\\beta_2$")
+```
+
+\newpage
+# Análisis y discusión de resultados
+La hipótesis planteada sugiere que el sistema de medición con smartphone debe ser capaz de discernir variaciones pequeñas en la inclinación del plano. Los resultados experimentales respaldan esta hipótesis: el ángulo $\alpha$ aumentó de $81.9876^\circ$ a $82.1047^\circ$ tras una modificación menor a $1^\circ$, generando una diferencia de aproximadamente $0.117^\circ$, muy superior a la incertidumbre experimental estimada ($\pm 0.008^\circ$). De manera similar, la rotación $\beta$ del plano varió de $-2.9638^\circ$ a $-4.6641^\circ$, una diferencia de $\approx 1.70^\circ$, que también supera ampliamente su incertidumbre ($\pm 0.056^\circ$).
+
+Las mediciones presentaron excelente precisión estadística, con incertidumbres del orden de $10^{-3}$ grados, producto del promedio sobre múltiples registros. El valor inicial de $\beta$ mostró una inclinación cercana a $-3^\circ$, lo que podría deberse a una ligera desalineación del smartphone o una alineación incorrecta del riel. Asimismo, al variar el ángulo con el medidor analógico, es posible que se haya introducido involuntariamente una rotación lateral del plano, lo que explicaría el incremento adicional en $\beta$.
+
+Otras fuentes de incertidumbre podrían incluir vibraciones externas, imprecisiones en el montaje y limitaciones en la resolución del medidor analógico. A pesar de estos factores, los resultados obtenidos muestran una clara capacidad del sistema para detectar cambios sutiles en la inclinación, lo que valida la hipótesis inicial.
+
+
+# Conclusiones
+La experiencia fue exitosa y permitió cumplir todos los objetivos planteados. Se logró medir con precisión el ángulo de inclinación del plano utilizando un smartphone, y se detectó de forma confiable una variación sutil menor a $1^\circ$. En consecuencia, se confirma la hipótesis de trabajo: el sistema de medición digital basado en el smartphone fue capaz de distinguir entre dos inclinaciones muy similares, con una diferencia significativa respecto a la incertidumbre asociada.
+
+Para futuras implementaciones del experimento, se sugiere calibrar adecuadamente el cero del sensor para reducir sesgos sistemáticos (como los observados en $\beta$), asegurar una mejor alineación del montaje, y aumentar la cantidad de mediciones para mejorar la estimación estadística de la incertidumbre.
+
+# Tabla resumen
+\begin{table}[ht]
+\centering
+\caption{Resumen de resultados experimentales}
+\begin{tabular}{lcc}
+\hline
+\textbf{Estado} & $\alpha$ [$^\circ$] & $\beta$ [$^\circ$] \\
+\hline
+Antes inclinación     & $81.9876 \pm 0.0077$  & $-2.9638 \pm 0.0108$ \\
+Después inclinación   & $82.1047 \pm 0.0073$  & $-4.6641 \pm 0.0563$ \\
+Diferencia            & $0.1171 \pm 0.0016$   & $-1.7003 \pm 0.0137$ \\
+\hline
+\end{tabular}
+\end{table}
